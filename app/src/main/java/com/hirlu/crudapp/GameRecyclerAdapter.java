@@ -14,10 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class GameRecyclerAdapter extends RecyclerView.Adapter<GameRecyclerAdapter.MyViewHolder> {
+    private final RecyclerViewInterface recyclerViewInterface;
     private List<Game> lGames;
     Context context = null;
 
-    public GameRecyclerAdapter(Context context, List<Game> lGames){
+    public GameRecyclerAdapter(Context context, List<Game> lGames, RecyclerViewInterface recyclerViewInterface){
+        this.recyclerViewInterface = recyclerViewInterface;
         this.context = context;
         this.lGames = lGames;
 
@@ -30,12 +32,38 @@ public class GameRecyclerAdapter extends RecyclerView.Adapter<GameRecyclerAdapte
 
         private ImageView Imagen;
 
-        public MyViewHolder(@NonNull View itemView) {
+        public MyViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
             super(itemView);
             this.name = itemView.findViewById(R.id.Name);
             this.description = itemView.findViewById(R.id.Description);
             this.year = itemView.findViewById(R.id.Year);
             Imagen = itemView.findViewById(R.id.Imagen);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (recyclerViewInterface != null){
+                        int pos = getAdapterPosition();
+
+                        if (pos != RecyclerView.NO_POSITION){
+                            recyclerViewInterface.onItemClick(v, pos);
+                        }
+                    }
+                }
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (recyclerViewInterface != null){
+                        int pos = getAdapterPosition();
+
+                        if (pos != RecyclerView.NO_POSITION){
+                            recyclerViewInterface.onItemLongClick(pos);
+                        }
+                    }
+                    return true;
+                }
+            });
         }
     }
     @NonNull
@@ -44,7 +72,7 @@ public class GameRecyclerAdapter extends RecyclerView.Adapter<GameRecyclerAdapte
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.game_adapter, parent, false);
 
-        return new GameRecyclerAdapter.MyViewHolder(view);
+        return new GameRecyclerAdapter.MyViewHolder(view, recyclerViewInterface);
     }
 
     @Override

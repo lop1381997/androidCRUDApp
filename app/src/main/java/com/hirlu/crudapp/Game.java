@@ -1,12 +1,28 @@
 package com.hirlu.crudapp;
 
 public class Game {
-    int id;
-    String name;
-    int year;
-    String description;
-    int pegiAge;
-    int image;
+    private int id;
+    private String name;
+    private int year;
+    private String description;
+    private int pegiAge;
+    private int image;
+    public Game(String name, int year, String description, int pegiAge, int image) {
+        this.name = name;
+        this.year = year;
+        this.description = description;
+        this.pegiAge = pegiAge;
+        this.image = image;
+    }
+
+    public Game(int id, String name, int year, String description, int pegiAge, int image) {
+        this.id = id;
+        this.name = name;
+        this.year = year;
+        this.description = description;
+        this.pegiAge = pegiAge;
+        this.image = image;
+    }
 
 
     public String getName() {
@@ -49,11 +65,11 @@ public class Game {
         this.image = image;
     }
 
-    public Game(String name, int year, String description, int pegiAge, int image) {
-        this.name = name;
-        this.year = year;
-        this.description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-        this.pegiAge = pegiAge;
-        this.image = image;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

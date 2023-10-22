@@ -15,8 +15,9 @@ import java.util.List;
 
 public class GameRecyclerAdapter extends RecyclerView.Adapter<GameRecyclerAdapter.MyViewHolder> {
     private final RecyclerViewInterface recyclerViewInterface;
-    private List<Game> lGames;
+     List<Game> lGames;
     Context context = null;
+
 
     public GameRecyclerAdapter(Context context, List<Game> lGames, RecyclerViewInterface recyclerViewInterface){
         this.recyclerViewInterface = recyclerViewInterface;
@@ -59,6 +60,8 @@ public class GameRecyclerAdapter extends RecyclerView.Adapter<GameRecyclerAdapte
 
                         if (pos != RecyclerView.NO_POSITION){
                             recyclerViewInterface.onItemLongClick(pos);
+//                            lGames.remove(pos);
+
                         }
                     }
                     return true;

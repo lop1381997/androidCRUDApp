@@ -7,6 +7,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -61,9 +63,19 @@ public class dbConnector {
 
     @SuppressLint("Range")
     public Game getGame(int id){
+//        id = 100;
         String query = "SELECT * FROM game where id = "+id;
+        Cursor cursor = null;
 
-        Cursor cursor = this.connection.rawQuery(query, null);
+        try {
+            cursor = this.connection.rawQuery(query, null);
+            if (cursor.getCount()< -1){
+                throw new Exception("No data found");
+            }
+        } catch (Exception e) {
+            Log.e("dbConnection", "Error selecting data into database.", e);
+        }
+
         Game game  = null;
         while (cursor.moveToNext()) {
              id = cursor.getInt(cursor.getColumnIndex("id"));

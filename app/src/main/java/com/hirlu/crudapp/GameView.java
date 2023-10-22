@@ -1,10 +1,16 @@
 package com.hirlu.crudapp;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -46,7 +52,59 @@ public class GameView extends AppCompatActivity {
         }
     };
 
+    private void onAddClick(){
+        Intent intent = new Intent(this, GameEditView.class);
+        intent.setAction(Intent.ACTION_SEND);
+        intent.putExtra("MODE", true);
+        intent.putExtra("ID", id);
 
+//        intent.putExtra("NAME", name.getText());
+//        intent.putExtra("YEAR", year.getText());
+//        intent.putExtra("DESCRIPTION", description.getText());
+//        intent.putExtra("PEGIAGE", pegiAge.getText());
+//        intent.putExtra("IMAGE", imageID);
+            getGamefromActivity.launch(intent);
+//            finish();
+
+    }
+
+    ActivityResultLauncher<Intent> getGamefromActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result != null && result.getResultCode() == RESULT_OK){
+                        if (result.getData() != null){
+                            Intent intent = getIntent();
+                            id = intent.getIntExtra("ID", 0);
+                            pos = intent.getIntExtra("POS", 0);
+
+                            Game game = connector.getGame(id);
+
+                            String nameText = null;
+                            String yearText = null;
+                            String descriptionText = null;
+                            String pageAgeText = null;
+                            imageID = R.drawable.ic_launcher_background;
+
+                            if (game != null){
+                                nameText = game.getName();
+                                yearText = String.valueOf(game.getYear());
+                                descriptionText = game.getDescription();
+                                pageAgeText = String.valueOf(game.getPegiAge());
+                                imageID = game.getImage();
+                            }
+                            name.setText(nameText);
+                            year.setText(yearText);
+                            description.setText(descriptionText);
+                            pegiAge.setText(pageAgeText);
+                            image.setImageResource(imageID);
+
+                        }
+                    }
+                }
+            }
+    );
 
 
     private final View.OnClickListener delete = new View.OnClickListener() {
@@ -54,25 +112,17 @@ public class GameView extends AppCompatActivity {
         public void onClick(View v) {
 
             Toast.makeText(GameView.this, "delete", Toast.LENGTH_SHORT).show();
-            connector.delete(id);
+            Intent intent = new Intent(GameView.this, MainActivity.class);
+            intent.putExtra("ID", id);
+            intent.putExtra("POS", pos);
+            intent.putExtra("MODE","delete" );
+            setResult(RESULT_OK, intent);
             finish();
 
         }
     };
 
-    private void onAddClick(){
-        Intent intent = new Intent(this, GameEditView.class);
-        intent.setAction(Intent.ACTION_SEND);
-        intent.putExtra("MODE", true);
-        intent.putExtra("ID", id);
-//        intent.putExtra("NAME", name.getText());
-//        intent.putExtra("YEAR", year.getText());
-//        intent.putExtra("DESCRIPTION", description.getText());
-//        intent.putExtra("PEGIAGE", pegiAge.getText());
-//        intent.putExtra("IMAGE", imageID);
-        startActivity(intent);
 
-    }
 
     private void onMenuClicked(){
         setVisibility();
@@ -118,7 +168,7 @@ public class GameView extends AppCompatActivity {
 
     private TextView name, year, description, pegiAge;
 
-    private int id;
+    private int id, pos;
 
     private ImageView image;
     private int imageID;
@@ -146,19 +196,25 @@ public class GameView extends AppCompatActivity {
 
         Intent intent = getIntent();
         id = intent.getIntExtra("ID", 0);
-//        String nameText = intent.getStringExtra("NAME");
-//        String yearText = String.valueOf(intent.getIntExtra("YEAR", 0));
-//        String descriptionText = intent.getStringExtra("DESCRIPTION");
-//        String pageAgeText = String.valueOf(intent.getIntExtra("PEGIAGE", 0));
-//        imageID = intent.getIntExtra("IMAGE", R.drawable.ic_launcher_background);
+        pos = intent.getIntExtra("POS", 0);
 
         Game game = connector.getGame(id);
 
-        String nameText = game.getName();
-        String yearText = String.valueOf(game.getYear());
-        String descriptionText = game.getDescription();
-        String pageAgeText = String.valueOf(game.getPegiAge());
-        imageID = game.getImage();
+        String nameText = null;
+        String yearText = null;
+        String descriptionText = null;
+        String pageAgeText = null;
+        imageID = R.drawable.ic_launcher_background;
+
+        if (game != null){
+            nameText = game.getName();
+            yearText = String.valueOf(game.getYear());
+            descriptionText = game.getDescription();
+            pageAgeText = String.valueOf(game.getPegiAge());
+            imageID = game.getImage();
+        }
+
+
 
         name = findViewById(R.id.nameEdit);
         year = findViewById(R.id.yearEdit);
@@ -170,13 +226,25 @@ public class GameView extends AppCompatActivity {
         description.setText(descriptionText);
         pegiAge.setText(pageAgeText);
         image.setImageResource(imageID);
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+
+                Intent intent =  new Intent(GameView.this, MainActivity.class);
+                intent.putExtra("ID", id);
+                intent.putExtra("POS", pos);
+                intent.putExtra("MODE", "edit");
+                setResult(RESULT_OK, intent);
+                GameView.super.onBackPressed();
+            }
+        };
+        this.getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //send necessary data
 
 
-    }
+
+
+
 }

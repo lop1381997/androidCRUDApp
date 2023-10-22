@@ -2,10 +2,17 @@ package com.hirlu.crudapp;
 
 import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -26,13 +33,32 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
  // TODO: 21/10/2023 cambio de paso de recursos a querys de la base de datos
     private void setData(){
         this.connector.insert("Onimusha", 2003,  18, R.drawable.ic_launcher_background);
+        lGames.add(new Game( "Onimusha", 2003, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 18, R.drawable.ic_launcher_background));
+        rGames.getAdapter().notifyItemInserted(lGames.size()-1);
+
         this.connector.insert("Sonic Heroes", 2003, 6, R.drawable.ic_launcher_background);
-        this.connector.insert("Onimusha", 2003, 18, R.drawable.ic_launcher_background);
+        lGames.add(new Game( "Sonic Heroes", 2003, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 6, R.drawable.ic_launcher_background));
+        rGames.getAdapter().notifyItemInserted(lGames.size()-1);
+
         this.connector.insert("Onimusha2", 2003, 18, R.drawable.ic_launcher_background);
+        lGames.add(new Game( "Onimusha2", 2003, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 18, R.drawable.ic_launcher_background));
+        rGames.getAdapter().notifyItemInserted(lGames.size()-1);
+
         this.connector.insert("Zone of the Enders", 2003, 12, R.drawable.ic_launcher_background);
-        this.connector.insert("Onimusha4", 2006, 12, R.drawable.ic_launcher_background);
+        lGames.add(new Game( "Zone of the Enders", 2003, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 12, R.drawable.ic_launcher_background));
+        rGames.getAdapter().notifyItemInserted(lGames.size()-1);
+
+        this.connector.insert("Onimusha4", 2006, 18, R.drawable.ic_launcher_background);
+        lGames.add(new Game( "Onimusha4", 2006, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 18, R.drawable.ic_launcher_background));
+        rGames.getAdapter().notifyItemInserted(lGames.size()-1);
+
         this.connector.insert("Onimusha3", 2003, 18, R.drawable.ic_launcher_background);
+        lGames.add(new Game( "Onimusha3", 2003, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 18, R.drawable.ic_launcher_background));
+        rGames.getAdapter().notifyItemInserted(lGames.size()-1);
+
         this.connector.insert("DragonBall Budokai Tenkaichi 3", 2003, 12, R.drawable.ic_launcher_background);
+        lGames.add(new Game( "DragonBall Budokai Tenkaichi 3", 2003, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 18, R.drawable.ic_launcher_background));
+        rGames.getAdapter().notifyItemInserted(lGames.size()-1);
     }
     private List<Game> getGamesData(){
         List <Game> list = connector.getData();
@@ -51,15 +77,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         Intent intent = new Intent(view.getContext(), GameView.class);
         intent.setAction(Intent.ACTION_SEND);
         this.lGames = getGamesData();
-        if (this.lGames!=null) {
+        if (this.lGames!=null ) {
             intent.putExtra("ID", this.lGames.get(pos).getId());
-//            intent.putExtra("NAME", this.lGames.get(pos).getName());
-//            intent.putExtra("YEAR", this.lGames.get(pos).getYear());
-//            intent.putExtra("DESCRIPTION", this.lGames.get(pos).getDescription());
-//            intent.putExtra("PEGIAGE", this.lGames.get(pos).getPegiAge());
-//            intent.putExtra("IMAGE", this.lGames.get(pos).getImage());
+            intent.putExtra("POS", pos);
         }
-        startActivity(intent);
+        getGamefromActivity.launch(intent);
 
     }
 
@@ -67,27 +89,30 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     @Override
     public void onItemLongClick(int pos) {
+        try {
+            if (pos>rGames.getHeight() || pos>lGames.size()){
+                throw new Exception("No data found on a the Game");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
         Toast.makeText(MainActivity.this, "delete", Toast.LENGTH_SHORT).show();
         int id = lGames.get(pos).getId();
         lGames.remove(pos);
         connector.delete(id);
-        lGames = getGamesData();
         adapter.notifyItemRemoved(pos);
 
     }
-
+//todo arreglar
     private View.OnClickListener afegir = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(v.getContext(), GameEditView.class);
             intent.setAction(Intent.ACTION_SEND);
             intent.putExtra("MODE", false);
-            intent.putExtra("NAME", "");
-            intent.putExtra("YEAR", "");
-            intent.putExtra("DESCRIPTION", "");
-            intent.putExtra("PEGIAGE", "");
-            intent.putExtra("IMAGE",  R.drawable.ic_launcher_background);
-            startActivity(intent);
+            getGamefromActivity.launch(intent);
         }
     };
 
@@ -95,9 +120,46 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         @Override
         public boolean onLongClick(View v) {
             setData();
+            Toast.makeText(MainActivity.this, "generateData", Toast.LENGTH_SHORT).show();
             return true;
         }
     };
+
+    ActivityResultLauncher<Intent> getGamefromActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result != null && result.getResultCode() == RESULT_OK){
+                        if (result.getData() != null){
+                            String mode= result.getData().getStringExtra("MODE");
+                            //delete
+                            //true -> delete
+                            if (mode.equals("delete")){
+
+                                int pos = result.getData().getIntExtra("POS", 0);
+//                                lGames.remove(pos);
+//                                connector.delete(id);
+//                                adapter.notifyItemRemoved(pos);
+                                onItemLongClick(pos);
+                            } else if (mode.equals("edit")) {
+                                int id = result.getData().getIntExtra("ID", 0);
+                                int pos = result.getData().getIntExtra("POS", 0);
+                                Game game = connector.getGame(id);
+                                lGames.remove(pos);
+                                lGames.add( pos, game);
+                                rGames.getAdapter().notifyItemInserted(pos);
+                            } else if (mode.equals("add")) {
+                                int id = result.getData().getIntExtra("ID", 0);
+                                Game game = connector.getGame(id);
+                                lGames.add(game);
+                                rGames.getAdapter().notifyItemInserted(lGames.size()-1);
+                            }
+                        }
+                    }
+                }
+            }
+    );
 
     private GameRecyclerAdapter adapter;
     @Override

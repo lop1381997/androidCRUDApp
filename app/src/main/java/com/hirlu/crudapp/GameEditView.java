@@ -39,7 +39,7 @@ public class GameEditView extends AppCompatActivity {
                          Integer.parseInt(year.getText().toString()),
                          Integer.parseInt(pegiAge.getText().toString()),
                          imageID);
-                intent = new Intent(GameEditView.this, MainActivity.class);
+                 intent = new Intent(GameEditView.this, MainActivity.class);
                  intent.putExtra("ID", id);
                  intent.putExtra("POS", pos);
                  intent.putExtra("MODE", "edit");

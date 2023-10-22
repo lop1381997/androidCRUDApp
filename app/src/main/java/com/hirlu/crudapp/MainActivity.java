@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.Instrumentation;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -30,7 +31,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     private dbConnector connector;
 
     private FloatingActionButton addButton;
- // TODO: 21/10/2023 cambio de paso de recursos a querys de la base de datos
+    private int pos;
+
+    // TODO: 21/10/2023 cambio de paso de recursos a querys de la base de datos
     private void setData(){
         this.connector.insert("Onimusha", 2003,  18, R.drawable.ic_launcher_background);
         lGames.add(new Game( "Onimusha", 2003, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 18, R.drawable.ic_launcher_background));
@@ -89,23 +92,31 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     @Override
     public void onItemLongClick(int pos) {
-        try {
-            if (pos>rGames.getHeight() || pos>lGames.size()){
-                throw new Exception("No data found on a the Game");
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-
-        Toast.makeText(MainActivity.this, "delete", Toast.LENGTH_SHORT).show();
-        int id = lGames.get(pos).getId();
-        lGames.remove(pos);
-        connector.delete(id);
-        adapter.notifyItemRemoved(pos);
-
+//        remove(pos);
+        this.pos = pos;
+        showDialog( );
     }
-//todo arreglar
+
+    public void showDialog(){
+
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.remove_dialog);
+        dialog.findViewById(R.id.si).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                remove(pos);
+                dialog.dismiss();
+            }
+        });
+        dialog.findViewById(R.id.no).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
     private View.OnClickListener afegir = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -125,6 +136,24 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         }
     };
 
+    void remove(int pos){
+        try {
+            if (pos>rGames.getHeight() || pos>lGames.size()){
+                throw new Exception("No data found on a the Game");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
+        Toast.makeText(MainActivity.this, "delete", Toast.LENGTH_SHORT).show();
+        int id = lGames.get(pos).getId();
+        lGames.remove(pos);
+        connector.delete(id);
+        adapter.notifyItemRemoved(pos);
+
+    }
+
     ActivityResultLauncher<Intent> getGamefromActivity = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -138,10 +167,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                             if (mode.equals("delete")){
 
                                 int pos = result.getData().getIntExtra("POS", 0);
-//                                lGames.remove(pos);
-//                                connector.delete(id);
-//                                adapter.notifyItemRemoved(pos);
-                                onItemLongClick(pos);
+                                remove(pos);
                             } else if (mode.equals("edit")) {
                                 int id = result.getData().getIntExtra("ID", 0);
                                 int pos = result.getData().getIntExtra("POS", 0);

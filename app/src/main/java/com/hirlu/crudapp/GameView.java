@@ -7,6 +7,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -58,13 +59,8 @@ public class GameView extends AppCompatActivity {
         intent.putExtra("MODE", true);
         intent.putExtra("ID", id);
 
-//        intent.putExtra("NAME", name.getText());
-//        intent.putExtra("YEAR", year.getText());
-//        intent.putExtra("DESCRIPTION", description.getText());
-//        intent.putExtra("PEGIAGE", pegiAge.getText());
-//        intent.putExtra("IMAGE", imageID);
+
             getGamefromActivity.launch(intent);
-//            finish();
 
     }
 
@@ -110,17 +106,35 @@ public class GameView extends AppCompatActivity {
     private final View.OnClickListener delete = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
-            Toast.makeText(GameView.this, "delete", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(GameView.this, MainActivity.class);
-            intent.putExtra("ID", id);
-            intent.putExtra("POS", pos);
-            intent.putExtra("MODE","delete" );
-            setResult(RESULT_OK, intent);
-            finish();
-
+            showDialog();
         }
     };
+
+    void showDialog(){
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.remove_dialog);
+        dialog.findViewById(R.id.si).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Toast.makeText(GameView.this, "delete", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(GameView.this, MainActivity.class);
+                intent.putExtra("ID", id);
+                intent.putExtra("POS", pos);
+                intent.putExtra("MODE","delete" );
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
+        dialog.findViewById(R.id.no).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
 
 
 

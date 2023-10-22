@@ -30,13 +30,13 @@ public class dbConnector {
                 "  year integer,\n" +
                 "  description text,\n" +
                 "  pegiAge int," +
-                "  image int,\n" +
+                "  image text,\n" +
                 "  constraint Game UNIQUE (year, name)\n" +
                 ");");
 
     }
         String lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing.";
-    public void insert(String name, int year,int pegiAge, int image){
+    public void insert(String name, int year,int pegiAge, String image){
 
         ContentValues contentValues =  new ContentValues();
         contentValues.put("name", name);
@@ -48,7 +48,7 @@ public class dbConnector {
         connection.insert("game", null, contentValues);
     }
 
-    public void insert(String name, String description, int year,int pegiAge, int image){
+    public void insert(String name, String description, int year,int pegiAge, String image){
 
         ContentValues contentValues =  new ContentValues();
         contentValues.put("name", name);
@@ -83,7 +83,7 @@ public class dbConnector {
             @SuppressLint("Range") int year = cursor.getInt(cursor.getColumnIndex("year"));
             @SuppressLint("Range") String description = cursor.getString(cursor.getColumnIndex("description"));
             @SuppressLint("Range") int pegiAge = cursor.getInt(cursor.getColumnIndex("pegiAge"));
-            @SuppressLint("Range") int image = cursor.getInt(cursor.getColumnIndex("image"));
+            @SuppressLint("Range") String image = cursor.getString(cursor.getColumnIndex("image"));
             game = new Game(id, name , year ,description, pegiAge, image);
         }
         return game;
@@ -99,7 +99,7 @@ public class dbConnector {
             @SuppressLint("Range") int year = cursor.getInt(cursor.getColumnIndex("year"));
             @SuppressLint("Range") String description = cursor.getString(cursor.getColumnIndex("description"));
             @SuppressLint("Range") int pegiAge = cursor.getInt(cursor.getColumnIndex("pegiAge"));
-            @SuppressLint("Range") int image = cursor.getInt(cursor.getColumnIndex("image"));
+            @SuppressLint("Range") String image = cursor.getString(cursor.getColumnIndex("image"));
 
 
             lGames.add(new Game(id, name, year, description, pegiAge, image));
@@ -107,7 +107,7 @@ public class dbConnector {
         return lGames;
     }
 
-    public void update(int id, String name, String description, int year, int pegiAge, int image){
+    public void update(int id, String name, String description, int year, int pegiAge, String image){
 
         ContentValues contentValues =  new ContentValues();
         contentValues.put("name", name);

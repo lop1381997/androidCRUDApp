@@ -6,8 +6,8 @@ public class Game {
     private int year;
     private String description;
     private int pegiAge;
-    private int image;
-    public Game(String name, int year, String description, int pegiAge, int image) {
+    private String image;
+    public Game(String name, int year, String description, int pegiAge, String image) {
         this.name = name;
         this.year = year;
         this.description = description;
@@ -15,7 +15,7 @@ public class Game {
         this.image = image;
     }
 
-    public Game(int id, String name, int year, String description, int pegiAge, int image) {
+    public Game(int id, String name, int year, String description, int pegiAge, String image) {
         this.id = id;
         this.name = name;
         this.year = year;
@@ -57,13 +57,11 @@ public class Game {
         this.pegiAge = pegiAge;
     }
 
-    public int getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(int image) {
-        this.image = image;
-    }
+
 
     public int getId() {
         return id;

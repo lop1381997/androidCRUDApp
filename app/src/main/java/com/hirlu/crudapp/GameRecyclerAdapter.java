@@ -2,6 +2,7 @@ package com.hirlu.crudapp;
 
 import android.app.GameManager;
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +86,14 @@ public class GameRecyclerAdapter extends RecyclerView.Adapter<GameRecyclerAdapte
         holder.name.setText(lGames.get(position).getName());
         holder.description.setText(lGames.get(position).getDescription());
         holder.year.setText(String.valueOf(lGames.get(position).getYear()));
-        holder.Imagen.setImageResource(lGames.get(position).getImage());
+        String imageID = lGames.get(position).getImage();
+
+        if (imageID.equals("R.drawable.ic_launcher_background")){
+            holder.Imagen.setImageResource(R.drawable.ic_launcher_background);
+        }
+//        else holder.Imagen.setImageURI(Uri.parse(imageID));
+
+
         holder.pegiAge.setText(String.valueOf(lGames.get(position).getPegiAge()));
 
     }

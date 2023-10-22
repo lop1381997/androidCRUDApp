@@ -24,7 +24,7 @@ import java.util.List;
 public class GameEditView extends AppCompatActivity {
     private  int id;
     private int pos;
-    private int imageID = 0;
+    private String imageID = "R.drawable.ic_launcher_background";
 
     private EditText name, year, description, pegiAge;
     private ImageView image;
@@ -110,8 +110,8 @@ public class GameEditView extends AppCompatActivity {
             if ((Integer)game.getPegiAge() != null) pageAgeText = String.valueOf(game.getPegiAge());
             else pageAgeText = " ";
 
-            if ((Integer)game.getImage() != null) imageID = game.getImage();
-            else imageID = R.drawable.ic_launcher_background;
+            if ((String)game.getImage() != null) imageID = game.getImage();
+            else imageID = "R.drawable.ic_launcher_background";
         }
 
         else {
@@ -119,7 +119,7 @@ public class GameEditView extends AppCompatActivity {
             yearText = "";
             descriptionText = "";
             pageAgeText = "";
-            imageID = R.drawable.ic_launcher_background;
+            imageID = "R.drawable.ic_launcher_background";
         }
 
 
@@ -132,7 +132,11 @@ public class GameEditView extends AppCompatActivity {
         year.setText(yearText);
         description.setText(descriptionText);
         pegiAge.setText(pageAgeText);
-        image.setImageResource(imageID);
+
+        if (imageID.equals("R.drawable.ic_launcher_background")){
+            image.setImageResource(R.drawable.ic_launcher_background);
+        }
+//        else image.setImageURI(Uri.parse(imageID));
 
         guardar = findViewById(R.id.guardar);
         guardar.setText(!mode ? "guardar" : "editar");
@@ -154,9 +158,10 @@ public class GameEditView extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     if (result != null && result.getResultCode() == RESULT_OK){
                         if (result.getData() != null){
-                            Uri imageURI = result.getData().getData();
-                            image.setImageURI(imageURI);
-//                            imageID = image.getId();
+                            String imageURI = String.valueOf(result.getData().getData());
+                            image.setImageURI(Uri.parse(imageURI));
+
+                            imageID = imageURI;
                         }
                     }
                 }

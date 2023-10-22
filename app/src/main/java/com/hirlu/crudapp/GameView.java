@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -81,7 +82,7 @@ public class GameView extends AppCompatActivity {
                             String yearText = null;
                             String descriptionText = null;
                             String pageAgeText = null;
-                            imageID = R.drawable.ic_launcher_background;
+                            imageID = "R.drawable.ic_launcher_background";
 
                             if (game != null){
                                 nameText = game.getName();
@@ -94,7 +95,10 @@ public class GameView extends AppCompatActivity {
                             year.setText(yearText);
                             description.setText(descriptionText);
                             pegiAge.setText(pageAgeText);
-                            image.setImageResource(imageID);
+                            if (imageID.equals("R.drawable.ic_launcher_background")){
+                                image.setImageResource(R.drawable.ic_launcher_background);
+                            }
+//                            else image.setImageURI(Uri.parse(imageID));
 
                         }
                     }
@@ -185,7 +189,7 @@ public class GameView extends AppCompatActivity {
     private int id, pos;
 
     private ImageView image;
-    private int imageID;
+    private String imageID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,7 +222,7 @@ public class GameView extends AppCompatActivity {
         String yearText = null;
         String descriptionText = null;
         String pageAgeText = null;
-        imageID = R.drawable.ic_launcher_background;
+        imageID = "R.drawable.ic_launcher_background";
 
         if (game != null){
             nameText = game.getName();
@@ -239,7 +243,10 @@ public class GameView extends AppCompatActivity {
         year.setText(yearText);
         description.setText(descriptionText);
         pegiAge.setText(pageAgeText);
-        image.setImageResource(imageID);
+        if (imageID.equals("R.drawable.ic_launcher_background")){
+            image.setImageResource(R.drawable.ic_launcher_background);
+        }
+//        else image.setImageURI(Uri.parse(imageID));
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override

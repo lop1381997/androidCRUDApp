@@ -60,11 +60,23 @@ public class GameEditView extends AppCompatActivity {
         image = findViewById(R.id.imageEdit);
 
         id = intent.getIntExtra("ID", 0);
-        name.setText(intent.getStringExtra("NAME"));
-        year.setText(intent.getStringExtra("YEAR"));
-        description.setText(intent.getStringExtra("DESCRIPTION"));
-        pegiAge.setText(intent.getStringExtra("PEGIAGE"));
-        imageID = intent.getIntExtra("IMAGE",  R.drawable.ic_launcher_background);
+        Game game = connector.getGame(id);
+
+        String nameText = game.getName();
+        String yearText = String.valueOf(game.getYear());
+        String descriptionText = game.getDescription();
+        String pageAgeText = String.valueOf(game.getPegiAge());
+        imageID = game.getImage();
+
+        name = findViewById(R.id.nameEdit);
+        year = findViewById(R.id.yearEdit);
+        description = findViewById(R.id.descriptionEdit);
+        pegiAge = findViewById(R.id.pegiEdit);
+        image = findViewById(R.id.imageEdit);
+        name.setText(nameText);
+        year.setText(yearText);
+        description.setText(descriptionText);
+        pegiAge.setText(pageAgeText);
         image.setImageResource(imageID);
 
         guardar = findViewById(R.id.guardar);

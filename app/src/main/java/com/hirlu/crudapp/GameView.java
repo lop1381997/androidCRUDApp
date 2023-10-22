@@ -65,11 +65,11 @@ public class GameView extends AppCompatActivity {
         intent.setAction(Intent.ACTION_SEND);
         intent.putExtra("MODE", true);
         intent.putExtra("ID", id);
-        intent.putExtra("NAME", name.getText());
-        intent.putExtra("YEAR", year.getText());
-        intent.putExtra("DESCRIPTION", description.getText());
-        intent.putExtra("PEGIAGE", pegiAge.getText());
-        intent.putExtra("IMAGE", imageID);
+//        intent.putExtra("NAME", name.getText());
+//        intent.putExtra("YEAR", year.getText());
+//        intent.putExtra("DESCRIPTION", description.getText());
+//        intent.putExtra("PEGIAGE", pegiAge.getText());
+//        intent.putExtra("IMAGE", imageID);
         startActivity(intent);
 
     }
@@ -146,11 +146,19 @@ public class GameView extends AppCompatActivity {
 
         Intent intent = getIntent();
         id = intent.getIntExtra("ID", 0);
-        String nameText = intent.getStringExtra("NAME");
-        String yearText = String.valueOf(intent.getIntExtra("YEAR", 0));
-        String descriptionText = intent.getStringExtra("DESCRIPTION");
-        String pageAgeText = String.valueOf(intent.getIntExtra("PEGIAGE", 0));
-        imageID = intent.getIntExtra("IMAGE", R.drawable.ic_launcher_background);
+//        String nameText = intent.getStringExtra("NAME");
+//        String yearText = String.valueOf(intent.getIntExtra("YEAR", 0));
+//        String descriptionText = intent.getStringExtra("DESCRIPTION");
+//        String pageAgeText = String.valueOf(intent.getIntExtra("PEGIAGE", 0));
+//        imageID = intent.getIntExtra("IMAGE", R.drawable.ic_launcher_background);
+
+        Game game = connector.getGame(id);
+
+        String nameText = game.getName();
+        String yearText = String.valueOf(game.getYear());
+        String descriptionText = game.getDescription();
+        String pageAgeText = String.valueOf(game.getPegiAge());
+        imageID = game.getImage();
 
         name = findViewById(R.id.nameEdit);
         year = findViewById(R.id.yearEdit);

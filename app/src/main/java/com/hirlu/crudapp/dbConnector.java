@@ -59,7 +59,24 @@ public class dbConnector {
     }
 
 
+    @SuppressLint("Range")
+    public Game getGame(int id){
+        String query = "SELECT * FROM game where id = "+id;
 
+        Cursor cursor = this.connection.rawQuery(query, null);
+        Game game  = null;
+        while (cursor.moveToNext()) {
+             id = cursor.getInt(cursor.getColumnIndex("id"));
+            @SuppressLint("Range") String name = cursor.getString(cursor.getColumnIndex("name"));
+            @SuppressLint("Range") int year = cursor.getInt(cursor.getColumnIndex("year"));
+            @SuppressLint("Range") String description = cursor.getString(cursor.getColumnIndex("description"));
+            @SuppressLint("Range") int pegiAge = cursor.getInt(cursor.getColumnIndex("pegiAge"));
+            @SuppressLint("Range") int image = cursor.getInt(cursor.getColumnIndex("image"));
+            game = new Game(id, name , year ,description, pegiAge, image);
+        }
+        return game;
+
+    }
 
     public List<Game> getData() {
         Cursor cursor = this.connection.rawQuery("SELECT * FROM game", null);

@@ -53,11 +53,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         this.lGames = getGamesData();
         if (this.lGames!=null) {
             intent.putExtra("ID", this.lGames.get(pos).getId());
-            intent.putExtra("NAME", this.lGames.get(pos).getName());
-            intent.putExtra("YEAR", this.lGames.get(pos).getYear());
-            intent.putExtra("DESCRIPTION", this.lGames.get(pos).getDescription());
-            intent.putExtra("PEGIAGE", this.lGames.get(pos).getPegiAge());
-            intent.putExtra("IMAGE", this.lGames.get(pos).getImage());
+//            intent.putExtra("NAME", this.lGames.get(pos).getName());
+//            intent.putExtra("YEAR", this.lGames.get(pos).getYear());
+//            intent.putExtra("DESCRIPTION", this.lGames.get(pos).getDescription());
+//            intent.putExtra("PEGIAGE", this.lGames.get(pos).getPegiAge());
+//            intent.putExtra("IMAGE", this.lGames.get(pos).getImage());
         }
         startActivity(intent);
 

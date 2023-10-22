@@ -30,6 +30,7 @@ public class GameRecyclerAdapter extends RecyclerView.Adapter<GameRecyclerAdapte
         private TextView name;
         private TextView description;
         private TextView year;
+        private TextView pegiAge;
 
         private ImageView Imagen;
 
@@ -38,6 +39,7 @@ public class GameRecyclerAdapter extends RecyclerView.Adapter<GameRecyclerAdapte
             this.name = itemView.findViewById(R.id.Name);
             this.description = itemView.findViewById(R.id.Description);
             this.year = itemView.findViewById(R.id.Year);
+            this.pegiAge = itemView.findViewById(R.id.PegiAge);
             Imagen = itemView.findViewById(R.id.Imagen);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -84,6 +86,7 @@ public class GameRecyclerAdapter extends RecyclerView.Adapter<GameRecyclerAdapte
         holder.description.setText(lGames.get(position).getDescription());
         holder.year.setText(String.valueOf(lGames.get(position).getYear()));
         holder.Imagen.setImageResource(lGames.get(position).getImage());
+        holder.pegiAge.setText(String.valueOf(lGames.get(position).getPegiAge()));
 
     }
 

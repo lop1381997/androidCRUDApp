@@ -1,10 +1,16 @@
 package com.hirlu.crudapp;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +22,9 @@ import android.widget.Toast;
 import java.util.List;
 
 public class GameEditView extends AppCompatActivity {
-    private  int id, pos, imageID = 0;
+    private  int id;
+    private int pos;
+    private int imageID = 0;
 
     private EditText name, year, description, pegiAge;
     private ImageView image;
@@ -130,5 +138,30 @@ public class GameEditView extends AppCompatActivity {
         guardar.setText(!mode ? "guardar" : "editar");
         guardar.setOnClickListener(guardarAction);
 
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+                resultLauncher.launch(intent);
+            }
+        });
+
     }
+    ActivityResultLauncher<Intent> resultLauncher  = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result != null && result.getResultCode() == RESULT_OK){
+                        if (result.getData() != null){
+                            Uri imageURI = result.getData().getData();
+                            image.setImageURI(imageURI);
+//                            imageID = image.getId();
+                        }
+                    }
+                }
+            }
+    );
+
 }
+

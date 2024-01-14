@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".GameView">
 
+    <Button
+        android:id="@+id/enrere"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@android:color/holo_red_light"
+        android:text="Enrere"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionEdit" />
+
     <ImageView
         android:id="@+id/imageEdit"
         android:layout_width="135dp"

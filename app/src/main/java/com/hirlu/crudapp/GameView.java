@@ -12,10 +12,10 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,8 +35,16 @@ public class GameView extends AppCompatActivity {
     private  FloatingActionButton menu_button;
     private  FloatingActionButton add_button;
     private  FloatingActionButton delete_button;
+    private Button enrere;
 
     private dbConnector connector;
+
+    private final View.OnClickListener enrereAction = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            finish();
+        }
+    };
 
 
     private final View.OnClickListener menu = new View.OnClickListener() {
@@ -212,6 +220,9 @@ public class GameView extends AppCompatActivity {
         add_button.setOnClickListener(add);
         delete_button.setOnClickListener(delete);
 
+        enrere = findViewById(R.id.enrere);
+        enrere.setOnClickListener(enrereAction);
+
         Intent intent = getIntent();
         id = intent.getIntExtra("ID", 0);
         pos = intent.getIntExtra("POS", 0);
@@ -247,6 +258,8 @@ public class GameView extends AppCompatActivity {
             image.setImageResource(R.drawable.ic_launcher_background);
         }
 //        else image.setImageURI(Uri.parse(imageID));
+//        else  image.setImageResource(R.drawable.ic_launcher_background);
+
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
@@ -257,7 +270,7 @@ public class GameView extends AppCompatActivity {
                 intent.putExtra("POS", pos);
                 intent.putExtra("MODE", "edit");
                 setResult(RESULT_OK, intent);
-                GameView.super.onBackPressed();
+                finish();
             }
         };
         this.getOnBackPressedDispatcher().addCallback(this, callback);

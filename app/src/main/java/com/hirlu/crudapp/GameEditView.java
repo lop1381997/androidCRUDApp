@@ -5,20 +5,20 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.List;
 
 public class GameEditView extends AppCompatActivity {
@@ -33,6 +33,14 @@ public class GameEditView extends AppCompatActivity {
 
     private Button guardar;
     private dbConnector connector;
+
+    private Button enrere;
+    private final View.OnClickListener enrereAction = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            finish();
+        }
+    };
 
     private View.OnClickListener guardarAction = new View.OnClickListener() {
         @Override
@@ -92,6 +100,10 @@ public class GameEditView extends AppCompatActivity {
         pos = intent.getIntExtra("POS", 0);
         Game game = connector.getGame(id);
 
+        enrere = findViewById(R.id.enrere);
+        enrere.setOnClickListener(enrereAction);
+        enrere.setText("Enrere");
+
         String nameText ;
         String yearText ;
         String descriptionText ;
@@ -99,16 +111,16 @@ public class GameEditView extends AppCompatActivity {
 
         if (game != null){
             if (game.getName() != "") nameText = game.getName();
-            else nameText = " ";
+            else nameText = "Name";
 
             if ((Integer)game.getYear() != null) yearText = String.valueOf(game.getYear());
-            else yearText = " ";
+            else yearText = "Year";
 
             if (game.getDescription() != null) descriptionText = game.getDescription();
-            else descriptionText = " ";
+            else descriptionText = "Description";
 
             if ((Integer)game.getPegiAge() != null) pageAgeText = String.valueOf(game.getPegiAge());
-            else pageAgeText = " ";
+            else pageAgeText = "PegiAge";
 
             if ((String)game.getImage() != null) imageID = game.getImage();
             else imageID = "R.drawable.ic_launcher_background";
@@ -136,7 +148,7 @@ public class GameEditView extends AppCompatActivity {
         if (imageID.equals("R.drawable.ic_launcher_background")){
             image.setImageResource(R.drawable.ic_launcher_background);
         }
-//        else image.setImageURI(Uri.parse(imageID));
+        else image.setImageURI(Uri.parse(imageID));
 
         guardar = findViewById(R.id.guardar);
         guardar.setText(!mode ? "guardar" : "editar");
@@ -159,8 +171,9 @@ public class GameEditView extends AppCompatActivity {
                     if (result != null && result.getResultCode() == RESULT_OK){
                         if (result.getData() != null){
                             String imageURI = String.valueOf(result.getData().getData());
+//                            Uri contentUri = FileProvider.getUriForFile(getApplicationContext(), getApplicationContext().getPackageName() + ".provider", new File(imageURI));
+//                            image.setImageURI(contentUri);
                             image.setImageURI(Uri.parse(imageURI));
-
                             imageID = imageURI;
                         }
                     }

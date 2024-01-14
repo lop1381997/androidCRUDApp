@@ -10,8 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
 import java.util.List;
 
 public class GameRecyclerAdapter extends RecyclerView.Adapter<GameRecyclerAdapter.MyViewHolder> {
@@ -63,8 +65,6 @@ public class GameRecyclerAdapter extends RecyclerView.Adapter<GameRecyclerAdapte
 
                         if (pos != RecyclerView.NO_POSITION){
                             recyclerViewInterface.onItemLongClick(pos);
-//                            lGames.remove(pos);
-
                         }
                     }
                     return true;
@@ -92,6 +92,12 @@ public class GameRecyclerAdapter extends RecyclerView.Adapter<GameRecyclerAdapte
             holder.Imagen.setImageResource(R.drawable.ic_launcher_background);
         }
 //        else holder.Imagen.setImageURI(Uri.parse(imageID));
+        else{
+//            Uri contentUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", new File(imageID));
+//            holder.Imagen.setImageURI(contentUri);
+//            holder.Imagen.setImageResource(R.drawable.ic_launcher_background);
+
+        }
 
 
         holder.pegiAge.setText(String.valueOf(lGames.get(position).getPegiAge()));
@@ -101,5 +107,19 @@ public class GameRecyclerAdapter extends RecyclerView.Adapter<GameRecyclerAdapte
     @Override
     public int getItemCount() {
         return lGames.size();
+    }
+
+    public void addGame(Game game){
+        lGames.add(game);
+        notifyDataSetChanged();
+    }
+    public void addGamewithpos(Game game, int pos){
+        lGames.add(pos, game);
+        notifyDataSetChanged();
+    }
+
+    public void removeGame(int pos){
+        lGames.remove(pos);
+        notifyDataSetChanged();
     }
 }

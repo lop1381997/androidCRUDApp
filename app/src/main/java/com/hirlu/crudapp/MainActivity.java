@@ -37,36 +37,37 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     // TODO: 21/10/2023 cambio de paso de recursos a querys de la base de datos
     private void setData(){
         lGames.clear();
-        this.connector.insert("Onimusha", 2003,  18, "R.drawable.ic_launcher_background");
-        lGames.add(new Game( "Onimusha", 2003, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 18, "R.drawable.ic_launcher_background"));
+        this.connector.insert("Onimusha", connector.getLorem(), 2003,  18, "R.drawable.ic_launcher_background");
+//        adapter.addGame(new Game( "Onimusha", 2003, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 18, "R.drawable.ic_launcher_background"));
 //        rGames.getAdapter().notifyItemInserted(lGames.size()-1);
 
-        this.connector.insert("Sonic Heroes", 2003, 6, "R.drawable.ic_launcher_background");
-        lGames.add(new Game( "Sonic Heroes", 2003, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 6, "R.drawable.ic_launcher_background"));
+        this.connector.insert("Sonic Heroes", connector.getLorem(), 2003, 6, "R.drawable.ic_launcher_background");
+//        adapter.addGame(new Game( "Sonic Heroes", 2003, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 6, "R.drawable.ic_launcher_background"));
 //        rGames.getAdapter().notifyItemInserted(lGames.size()-1);
 
-        this.connector.insert("Onimusha2", 2003, 18, "R.drawable.ic_launcher_background");
-        lGames.add(new Game( "Onimusha2", 2003, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 18, "R.drawable.ic_launcher_background"));
+        this.connector.insert("Onimusha2", connector.getLorem(), 2003, 18, "R.drawable.ic_launcher_background");
+//        adapter.addGame(new Game( "Onimusha2", 2003, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 18, "R.drawable.ic_launcher_background"));
 //        rGames.getAdapter().notifyItemInserted(lGames.size()-1);
 
-        this.connector.insert("Zone of the Enders", 2003, 12, "R.drawable.ic_launcher_background");
-        lGames.add(new Game( "Zone of the Enders", 2003, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 12, "R.drawable.ic_launcher_background"));
+        this.connector.insert("Zone of the Enders", connector.getLorem(), 2003, 12, "R.drawable.ic_launcher_background");
+//        adapter.addGame(new Game( "Zone of the Enders", 2003, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 12, "R.drawable.ic_launcher_background"));
 //        rGames.getAdapter().notifyItemInserted(lGames.size()-1);
 
-        this.connector.insert("Onimusha4", 2006, 18, "R.drawable.ic_launcher_background");
-        lGames.add(new Game( "Onimusha4", 2006, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 18, "R.drawable.ic_launcher_background"));
+        this.connector.insert("Onimusha4", connector.getLorem(), 2006, 18, "R.drawable.ic_launcher_background");
+//        adapter.addGame(new Game( "Onimusha4", 2006, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 18, "R.drawable.ic_launcher_background"));
 //        rGames.getAdapter().notifyItemInserted(lGames.size()-1);
 
-        this.connector.insert("Onimusha3", 2003, 18, "R.drawable.ic_launcher_background");
-        lGames.add(new Game( "Onimusha3", 2003, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 18, "R.drawable.ic_launcher_background"));
+        this.connector.insert("Onimusha3", connector.getLorem(), 2003, 18, "R.drawable.ic_launcher_background");
+//        adapter.addGame(new Game( "Onimusha3", 2003, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 18, "R.drawable.ic_launcher_background"));
 //        rGames.getAdapter().notifyItemInserted(lGames.size()-1);
 
-        this.connector.insert("DragonBall Budokai Tenkaichi 3", 2003, 12, "R.drawable.ic_launcher_background");
-        lGames.add(new Game( "DragonBall Budokai Tenkaichi 3", 2003, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 18, "R.drawable.ic_launcher_background"));
-        rGames.getAdapter().notifyDataSetChanged();
+        this.connector.insert("DragonBall Budokai Tenkaichi 3",  connector.getLorem(),2003, 12, "R.drawable.ic_launcher_background");
+//        adapter.addGame(new Game( "DragonBall Budokai Tenkaichi 3", 2003, "Lorem ipsum dolor sit amet, consectetur adipiscing.", 18, "R.drawable.ic_launcher_background"));
+        lGames = getGamesData();
+        adapter.notifyDataSetChanged();
     }
     private List<Game> getGamesData(){
-        List <Game> list = connector.getData();
+        List <Game> list = connector.getDataWithImage();
         return list;
     }
 
@@ -144,7 +145,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         Toast.makeText(MainActivity.this, "delete", Toast.LENGTH_SHORT).show();
         int id = lGames.get(pos).getId();
         connector.delete(id);
-//        lGames.remove(pos);
         adapter.removeGame(pos);
 
     }
@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                             } else if (mode.equals("edit")) {
                                 int id = result.getData().getIntExtra("ID", 0);
                                 int pos = result.getData().getIntExtra("POS", 0);
-                                Game game = connector.getGame(id);
+                                Game game = connector.getGameWithImage(id);
                                 lGames.remove(pos);
                                 lGames.add( pos, game);
 //                                rGames.getAdapter().notifyItemInserted(pos);
@@ -174,11 +174,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                             } else if (mode.equals("add")) {
 
                                 int id = result.getData().getIntExtra("ID", 0);
-                                Game game = connector.getGame(id);
+                                Game game = connector.getGameWithImage(id);
                                 adapter.addGame(game);
                             }
                         }
                     }
+                adapter.notifyDataSetChanged();
                 }
             }
     );

@@ -2,6 +2,8 @@ package com.hirlu.crudapp;
 
 import android.app.GameManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
+import java.util.BitSet;
 import java.util.List;
 
 public class GameRecyclerAdapter extends RecyclerView.Adapter<GameRecyclerAdapter.MyViewHolder> {
@@ -86,22 +89,13 @@ public class GameRecyclerAdapter extends RecyclerView.Adapter<GameRecyclerAdapte
         holder.name.setText(lGames.get(position).getName());
         holder.description.setText(lGames.get(position).getDescription());
         holder.year.setText(String.valueOf(lGames.get(position).getYear()));
-        String imageID = lGames.get(position).getImage();
 
-        if (imageID.equals("R.drawable.ic_launcher_background")){
-            holder.Imagen.setImageResource(R.drawable.ic_launcher_background);
-        }
-//        else holder.Imagen.setImageURI(Uri.parse(imageID));
-        else{
-//            Uri contentUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", new File(imageID));
-//            holder.Imagen.setImageURI(contentUri);
-//            holder.Imagen.setImageResource(R.drawable.ic_launcher_background);
-
-        }
-
+        byte[] image = lGames.get(position).getImageByte();
+        Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+        if (bitmap == null) holder.Imagen.setImageResource(R.drawable.ic_launcher_background);
+        else holder.Imagen.setImageBitmap(bitmap);
 
         holder.pegiAge.setText(String.valueOf(lGames.get(position).getPegiAge()));
-
     }
 
     @Override

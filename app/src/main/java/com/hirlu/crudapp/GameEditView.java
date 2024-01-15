@@ -9,6 +9,10 @@ import androidx.core.content.FileProvider;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,16 +22,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class GameEditView extends AppCompatActivity {
     private  int id;
     private int pos;
     private String imageID = "R.drawable.ic_launcher_background";
+    private byte[] byteArray;
 
     private EditText name, year, description, pegiAge;
-    private ImageView image;
+    private ImageView imageView;
 
     private boolean mode;
 
@@ -48,13 +55,17 @@ public class GameEditView extends AppCompatActivity {
             Toast.makeText(GameEditView.this, "Guardar/Editar", Toast.LENGTH_SHORT).show();
             Intent intent = null;
             if (mode){
-                //edit
-                 connector.update(id,
-                         name.getText().toString(),
-                         description.getText().toString(),
-                         Integer.parseInt(year.getText().toString()),
-                         Integer.parseInt(pegiAge.getText().toString()),
-                         imageID);
+                //edit game
+                    Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                     byte[] byteTabla = byteArrayOutputStream.toByteArray();
+                    connector.update(id,
+                            name.getText().toString(),
+                            description.getText().toString(),
+                            Integer.parseInt(year.getText().toString()),
+                            Integer.parseInt(pegiAge.getText().toString()),
+                            byteTabla);
                  intent = new Intent(GameEditView.this, MainActivity.class);
                  intent.putExtra("ID", id);
                  intent.putExtra("POS", pos);
@@ -64,8 +75,12 @@ public class GameEditView extends AppCompatActivity {
             }
             else{
                 //new game
-                connector.insert( name.getText().toString(), description.getText().toString(), Integer.parseInt(year.getText().toString()), Integer.parseInt(pegiAge.getText().toString()), imageID);
-                List<Game> lGames = connector.getData();
+                Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                byteArray = byteArrayOutputStream.toByteArray();
+                connector.insert( name.getText().toString(), description.getText().toString(), Integer.parseInt(year.getText().toString()), Integer.parseInt(pegiAge.getText().toString()), byteArray);
+                List<Game> lGames = connector.getDataWithImage();
                 intent = new Intent(GameEditView.this, MainActivity.class);
                 id = lGames.get(lGames.size()-1).getId();
                 intent.putExtra("ID", id);
@@ -94,11 +109,11 @@ public class GameEditView extends AppCompatActivity {
         year = findViewById(R.id.yearEdit);
         description = findViewById(R.id.descriptionEdit);
         pegiAge = findViewById(R.id.pegiEdit);
-        image = findViewById(R.id.imageEdit);
+        imageView = findViewById(R.id.imageEdit);
 
         id = intent.getIntExtra("ID", 0);
         pos = intent.getIntExtra("POS", 0);
-        Game game = connector.getGame(id);
+        Game game = connector.getGameWithImage(id);
 
         enrere = findViewById(R.id.enrere);
         enrere.setOnClickListener(enrereAction);
@@ -124,6 +139,9 @@ public class GameEditView extends AppCompatActivity {
 
             if ((String)game.getImage() != null) imageID = game.getImage();
             else imageID = "R.drawable.ic_launcher_background";
+
+            if (game.getImageByte() != null) byteArray = game.getImageByte();
+            else byteArray = null;
         }
 
         else {
@@ -135,26 +153,30 @@ public class GameEditView extends AppCompatActivity {
         }
 
 
-        name = findViewById(R.id.nameEdit);
-        year = findViewById(R.id.yearEdit);
-        description = findViewById(R.id.descriptionEdit);
-        pegiAge = findViewById(R.id.pegiEdit);
-        image = findViewById(R.id.imageEdit);
+
         name.setText(nameText);
         year.setText(yearText);
         description.setText(descriptionText);
         pegiAge.setText(pageAgeText);
 
-        if (imageID.equals("R.drawable.ic_launcher_background")){
-            image.setImageResource(R.drawable.ic_launcher_background);
+        if (byteArray == null) imageView.setImageResource(R.drawable.ic_launcher_background);
+//        Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+//        if (bitmap == null) imageView.setImageResource(R.drawable.ic_launcher_background);
+        else{
+            Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+            imageView.setImageBitmap(bitmap);
         }
-        else image.setImageURI(Uri.parse(imageID));
+
+        if (imageID.equals("R.drawable.ic_launcher_background")){
+            imageView.setImageResource(R.drawable.ic_launcher_background);
+        }
+        else imageView.setImageURI(Uri.parse(imageID));
 
         guardar = findViewById(R.id.guardar);
         guardar.setText(!mode ? "guardar" : "editar");
         guardar.setOnClickListener(guardarAction);
 
-        image.setOnClickListener(new View.OnClickListener() {
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
@@ -173,7 +195,16 @@ public class GameEditView extends AppCompatActivity {
                             String imageURI = String.valueOf(result.getData().getData());
 //                            Uri contentUri = FileProvider.getUriForFile(getApplicationContext(), getApplicationContext().getPackageName() + ".provider", new File(imageURI));
 //                            image.setImageURI(contentUri);
-                            image.setImageURI(Uri.parse(imageURI));
+                            imageView.setImageURI(Uri.parse(imageURI));
+                            Bitmap bitmap = null;
+                            try {
+                                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(imageURI));
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                             byteArray = byteArrayOutputStream.toByteArray();
                             imageID = imageURI;
                         }
                     }

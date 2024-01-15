@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -84,7 +86,7 @@ public class GameView extends AppCompatActivity {
                             id = intent.getIntExtra("ID", 0);
                             pos = intent.getIntExtra("POS", 0);
 
-                            Game game = connector.getGame(id);
+                            Game game = connector.getGameWithImage(id);
 
                             String nameText = null;
                             String yearText = null;
@@ -104,10 +106,16 @@ public class GameView extends AppCompatActivity {
                             description.setText(descriptionText);
                             pegiAge.setText(pageAgeText);
                             if (imageID.equals("R.drawable.ic_launcher_background")){
-                                image.setImageResource(R.drawable.ic_launcher_background);
+                                imageView.setImageResource(R.drawable.ic_launcher_background);
                             }
-//                            else image.setImageURI(Uri.parse(imageID));
-
+                            else{
+                                byte[] image = game.getImageByte();
+                                if (image == null) imageView.setImageResource(R.drawable.ic_launcher_background);
+                                else {
+                                    Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+                                    imageView.setImageBitmap(bitmap);
+                                }
+                            }
                         }
                     }
                 }
@@ -196,7 +204,7 @@ public class GameView extends AppCompatActivity {
 
     private int id, pos;
 
-    private ImageView image;
+    private ImageView imageView;
     private String imageID;
 
     @Override
@@ -227,13 +235,14 @@ public class GameView extends AppCompatActivity {
         id = intent.getIntExtra("ID", 0);
         pos = intent.getIntExtra("POS", 0);
 
-        Game game = connector.getGame(id);
+        Game game = connector.getGameWithImage(id);
 
         String nameText = null;
         String yearText = null;
         String descriptionText = null;
         String pageAgeText = null;
-        imageID = "R.drawable.ic_launcher_background";
+        imageID = "custom";
+        byte[] image = null;
 
         if (game != null){
             nameText = game.getName();
@@ -241,6 +250,7 @@ public class GameView extends AppCompatActivity {
             descriptionText = game.getDescription();
             pageAgeText = String.valueOf(game.getPegiAge());
             imageID = game.getImage();
+            image = game.getImageByte();
         }
 
 
@@ -249,16 +259,17 @@ public class GameView extends AppCompatActivity {
         year = findViewById(R.id.yearEdit);
         description = findViewById(R.id.descriptionEdit);
         pegiAge = findViewById(R.id.pegiEdit);
-        image = findViewById(R.id.imageEdit);
+        imageView = findViewById(R.id.imageEdit);
         name.setText(nameText);
         year.setText(yearText);
         description.setText(descriptionText);
         pegiAge.setText(pageAgeText);
-        if (imageID.equals("R.drawable.ic_launcher_background")){
-            image.setImageResource(R.drawable.ic_launcher_background);
-        }
-//        else image.setImageURI(Uri.parse(imageID));
-//        else  image.setImageResource(R.drawable.ic_launcher_background);
+
+
+        Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+        if (bitmap == null) imageView.setImageResource(R.drawable.ic_launcher_background);
+        else imageView.setImageBitmap(bitmap);
+
 
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {

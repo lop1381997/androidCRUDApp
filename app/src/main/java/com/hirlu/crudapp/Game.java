@@ -7,12 +7,14 @@ public class Game {
     private String description;
     private int pegiAge;
     private String image;
+    private byte[] imageByte;
     public Game(String name, int year, String description, int pegiAge, String image) {
         this.name = name;
         this.year = year;
         this.description = description;
         this.pegiAge = pegiAge;
         this.image = image;
+        this.imageByte = null;
     }
 
     public Game(int id, String name, int year, String description, int pegiAge, String image) {
@@ -22,6 +24,17 @@ public class Game {
         this.description = description;
         this.pegiAge = pegiAge;
         this.image = image;
+        this.imageByte = null;
+    }
+    public Game(int id, String name, int year, String description, int pegiAge, byte[] imageByte) {
+        this.id = id;
+        this.name = name;
+        this.year = year;
+        this.description = description;
+        this.pegiAge = pegiAge;
+        this.imageByte = imageByte;
+        if (imageByte == null)  this.image = "R.drawable.ic_launcher_background";
+        else this.image = "custom";
     }
 
 
@@ -58,7 +71,12 @@ public class Game {
     }
 
     public String getImage() {
-        return image;
+
+        if (this.image == null) return "";
+        else return image;
+    }
+    public byte[] getImageByte() {
+        return imageByte;
     }
 
 

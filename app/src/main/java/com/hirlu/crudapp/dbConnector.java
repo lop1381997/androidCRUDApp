@@ -27,15 +27,6 @@ public class dbConnector {
         this.connection = connection;
 
 //        this.connection.execSQL("DROP TABLE game");
-//        this.connection.execSQL("CREATE TABLE if not exists game(\n" +
-//                "  id integer PRIMARY KEY,\n" +
-//                "  name text,\n" +
-//                "  year integer,\n" +
-//                "  description text,\n" +
-//                "  pegiAge int," +
-//                "  image text,\n" +
-//                "  constraint Game UNIQUE (year, name)\n" +
-//                ");");
         this.connection.execSQL("CREATE TABLE if not exists game(\n" +
                 "  id integer PRIMARY KEY,\n" +
                 "  name text,\n" +

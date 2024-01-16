@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -56,10 +57,16 @@ public class GameEditView extends AppCompatActivity {
             Intent intent = null;
             if (mode){
                 //edit game
-                    Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+                byte[] byteTabla = null;
+                if (imageView.getDrawable() instanceof VectorDrawable){
+                    byteTabla = null;
+                }
+                 else {
+                    Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                     byte[] byteTabla = byteArrayOutputStream.toByteArray();
+                     byteTabla = byteArrayOutputStream.toByteArray();
+                }
                     connector.update(id,
                             name.getText().toString(),
                             description.getText().toString(),
@@ -75,11 +82,17 @@ public class GameEditView extends AppCompatActivity {
             }
             else{
                 //new game
-                Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                byteArray = byteArrayOutputStream.toByteArray();
-                connector.insert( name.getText().toString(), description.getText().toString(), Integer.parseInt(year.getText().toString()), Integer.parseInt(pegiAge.getText().toString()), byteArray);
+                byte[] byteTabla = null;
+                if (imageView.getDrawable() instanceof VectorDrawable){
+                    byteTabla = null;
+                }
+                else {
+                    Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                    byteTabla = byteArrayOutputStream.toByteArray();
+                }
+                connector.insert( name.getText().toString(), description.getText().toString(), Integer.parseInt(year.getText().toString()), Integer.parseInt(pegiAge.getText().toString()), byteTabla);
                 List<Game> lGames = connector.getDataWithImage();
                 intent = new Intent(GameEditView.this, MainActivity.class);
                 id = lGames.get(lGames.size()-1).getId();

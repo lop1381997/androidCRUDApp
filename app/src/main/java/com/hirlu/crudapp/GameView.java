@@ -86,7 +86,7 @@ public class GameView extends AppCompatActivity {
                             id = intent.getIntExtra("ID", 0);
                             pos = intent.getIntExtra("POS", 0);
 
-                            Game game = connector.getGameWithImage(id);
+                            Game game = connector.getGame(id);
 
                             String nameText = null;
                             String yearText = null;
@@ -105,17 +105,23 @@ public class GameView extends AppCompatActivity {
                             year.setText(yearText);
                             description.setText(descriptionText);
                             pegiAge.setText(pageAgeText);
-                            if (imageID.equals("R.drawable.ic_launcher_background")){
-                                imageView.setImageResource(R.drawable.ic_launcher_background);
-                            }
-                            else{
-                                byte[] image = game.getImageByte();
-                                if (image == null) imageView.setImageResource(R.drawable.ic_launcher_background);
+//                            if (imageID.equals("R.drawable.ic_launcher_background")){
+//                                imageView.setImageResource(R.drawable.ic_launcher_background);
+//                            }
+//                            else{
+//                                byte[] image = game.getImageByte();
+//                                if (image == null) imageView.setImageResource(R.drawable.ic_launcher_background);
+//                                else {
+//                                    Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+//                                    imageView.setImageBitmap(bitmap);
+//                                }
+//                            }
+                            byte[] image = null;
+                            if (image == null) imageView.setImageResource(R.drawable.ic_launcher_background);
                                 else {
                                     Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
                                     imageView.setImageBitmap(bitmap);
                                 }
-                            }
                         }
                     }
                 }
@@ -235,13 +241,13 @@ public class GameView extends AppCompatActivity {
         id = intent.getIntExtra("ID", 0);
         pos = intent.getIntExtra("POS", 0);
 
-        Game game = connector.getGameWithImage(id);
+        Game game = connector.getGame(id);
 
         String nameText = null;
         String yearText = null;
         String descriptionText = null;
         String pageAgeText = null;
-        imageID = "custom";
+        imageID = "R.drawable.ic_launcher_background";
         byte[] image = null;
 
         if (game != null){
@@ -266,10 +272,11 @@ public class GameView extends AppCompatActivity {
         pegiAge.setText(pageAgeText);
 
 
-        Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
-        if (bitmap == null) imageView.setImageResource(R.drawable.ic_launcher_background);
-        else imageView.setImageBitmap(bitmap);
-
+        if (image == null) imageView.setImageResource(R.drawable.ic_launcher_background);
+        else {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+            imageView.setImageBitmap(bitmap);
+        }
 
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {

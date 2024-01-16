@@ -91,9 +91,11 @@ public class GameRecyclerAdapter extends RecyclerView.Adapter<GameRecyclerAdapte
         holder.year.setText(String.valueOf(lGames.get(position).getYear()));
 
         byte[] image = lGames.get(position).getImageByte();
-        Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
-        if (bitmap == null) holder.Imagen.setImageResource(R.drawable.ic_launcher_background);
-        else holder.Imagen.setImageBitmap(bitmap);
+        if (image == null) holder.Imagen.setImageResource(R.drawable.ic_launcher_background);
+        else {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+            holder.Imagen.setImageBitmap(bitmap);
+        }
 
         holder.pegiAge.setText(String.valueOf(lGames.get(position).getPegiAge()));
     }
@@ -108,7 +110,7 @@ public class GameRecyclerAdapter extends RecyclerView.Adapter<GameRecyclerAdapte
         notifyDataSetChanged();
     }
     public void addGamewithpos(Game game, int pos){
-        lGames.add(pos, game);
+        lGames.set(pos, game);
         notifyDataSetChanged();
     }
 
